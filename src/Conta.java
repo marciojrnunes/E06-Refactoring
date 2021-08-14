@@ -3,71 +3,97 @@ import java.util.List;
 
 public class Conta {
 
-    // TODO(#1) REFATORAR: Esses dados deveriam ficar em outro lugar
-    private String nomeCliente;
-    private String cpfCliente;
-    private String telefoneCliente;
+    private static int TOTAL_CONTAS = 0;
 
-    // TODO(#1) REFATORAR: Esses dados deveriam ficar em outro lugar
-    private int numAgencia;
+    private Agencia agencia;
+    private Cliente cliente;
     private int numConta;
-    private String gerente;
-
-    // TODO(#2) REFATORAR: Esse nome não é o ideal para representar o saldo da conta
-    private double valor;
-
+    private double saldo;
     private List<Operacao> operacoes;
 
-    public Conta(String nomeCliente, String cpfCliente, String telefoneCliente, int numAgencia, int numConta, String gerente, double valor) {
-        this.nomeCliente = nomeCliente;
-        this.cpfCliente = cpfCliente;
-        this.telefoneCliente = telefoneCliente;
-        this.numAgencia = numAgencia;
-        this.numConta = numConta;
-        this.gerente = gerente;
-        this.valor = valor;
-
+    public Conta(Cliente cliente, Agencia agencia) {
+        this.cliente = cliente;
+        this.agencia = agencia;
+        this.numConta = TOTAL_CONTAS + 1;
+        this.saldo = 0.0;
         this.operacoes = new ArrayList<>();
+
+        Conta.TOTAL_CONTAS++;
     }
 
     public Conta() {
-        this(null, null, null, 0, 0, null, 0);
+        this(null, null);
     }
 
-    // TODO(#3) REFATORAR: Muita responsabilidade para o mesmo método
-    public void realizarOperacao(char tipo, int valor) {
-        Operacao op = new Operacao(tipo, valor);
-        this.operacoes.add(op);
-
-        if (tipo == 'd')
-            this.valor += valor;
-        else if(tipo == 's')
-            this.valor -= valor;
+    public void depositar(double valor) {
+        if (valor > 0) {
+            this.operacoes.add(new OperacaoDeposito(valor));
+            this.saldo += valor;
+        }
     }
+
+    public void sacar(double valor) {
+        if (valor <= this.saldo) {
+            this.operacoes.add(new OperacaoSaque(valor));
+            this.saldo -= valor;
+        }
+    }
+
+    public String getExtrato() {
+        StringBuilder extrato = new StringBuilder("====== Extrato da conta ======\n");
+        for (Operacao atual : this.operacoes) {
+            extrato.append(atual.toString()).append("\n");
+        }
+        return extrato.toString();
+    }
+
 
     public String toString() {
-        // TODO(#4) REFATORAR: Esses dados não estão relacionados a conta
-        String dadosCliente = String.format("CPF: %s\nNome: %s\nTelefone: %s",
-                this.cpfCliente, this.nomeCliente, this.telefoneCliente);
+        return "------- Dados da conta nº " + this.numConta + " ---------" + "\n" +
+                "Saldo da conta: " + String.format("%.2f", this.saldo) + "\n" +
+                this.agencia.toString() +
+                this.cliente.toString() +
+                this.getExtrato() +
+                "------------------------------------\n";
+    }
 
-        // TODO(#4) REFATORAR: Esses dados não estão relacinados a conta
-        String dadosConta = String.format("Ag.: %d\nConta: %d\nGerente: %s\nSaldo: %.2f",
-                this.numAgencia, this.numConta, this.gerente, this.valor);
+    public Agencia getAgencia() {
+        return agencia;
+    }
 
-        // TODO(#5) REFATORAR: Essa operação não deveria estar sendo realizada neste método
-        String dadosExtrato = "";
-        for(Operacao op : this.operacoes) {
-            dadosExtrato += op.toString() + "\n";
-        }
+    public void setAgencia(Agencia agencia) {
+        this.agencia = agencia;
+    }
 
-        return "-----CLIENTE-----\n" +
-                dadosCliente +
-                "\n\n" +
-                "-----CONTA-----\n" +
-                dadosConta +
-                "\n\n" +
-                "-----EXTRATO-----\n" +
-                dadosExtrato +
-                "\n";
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
+
+    public int getNumConta() {
+        return numConta;
+    }
+
+    public void setNumConta(int numConta) {
+        this.numConta = numConta;
+    }
+
+    public double getSaldo() {
+        return saldo;
+    }
+
+    public void setSaldo(double saldo) {
+        this.saldo = saldo;
+    }
+
+    public List<Operacao> getOperacoes() {
+        return operacoes;
+    }
+
+    public void setOperacoes(List<Operacao> operacoes) {
+        this.operacoes = operacoes;
     }
 }
