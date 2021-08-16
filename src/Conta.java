@@ -3,71 +3,70 @@ import java.util.List;
 
 public class Conta {
 
-    // TODO(#1) REFATORAR: Esses dados deveriam ficar em outro lugar
-    private String nomeCliente;
-    private String cpfCliente;
-    private String telefoneCliente;
-
-    // TODO(#1) REFATORAR: Esses dados deveriam ficar em outro lugar
-    private int numAgencia;
+    private Cliente cliente;
+    private Banco banco;
     private int numConta;
-    private String gerente;
-
-    // TODO(#2) REFATORAR: Esse nome não é o ideal para representar o saldo da conta
-    private double valor;
-
+    private double saldo;
     private List<Operacao> operacoes;
-
-    public Conta(String nomeCliente, String cpfCliente, String telefoneCliente, int numAgencia, int numConta, String gerente, double valor) {
-        this.nomeCliente = nomeCliente;
-        this.cpfCliente = cpfCliente;
-        this.telefoneCliente = telefoneCliente;
-        this.numAgencia = numAgencia;
+    
+    public Conta(Cliente cliente, Banco banco, int numConta, double saldo) {
+        this.cliente = cliente;
+        this.banco = banco;
         this.numConta = numConta;
-        this.gerente = gerente;
-        this.valor = valor;
-
+        this.saldo = saldo;
         this.operacoes = new ArrayList<>();
     }
 
     public Conta() {
-        this(null, null, null, 0, 0, null, 0);
+        this(null, null, 0, 0);
     }
 
-    // TODO(#3) REFATORAR: Muita responsabilidade para o mesmo método
-    public void realizarOperacao(char tipo, int valor) {
-        Operacao op = new Operacao(tipo, valor);
+    private void atualizarSaldo(Operacao op, double valor){
+        if (op instanceof OpDeposito)
+            this.saldo += valor;
+        else if(op instanceof OpSaque)
+            this.saldo -= valor;
+    }
+
+    private Operacao selecionarOperacao(char tipo, double valor){
+        Operacao op = new OpDeposito();
+        if (tipo == 'd'){
+            op = new OpDeposito(tipo, valor);       
+        }            
+        else if(tipo == 's'){
+            op = new OpSaque(tipo, valor);
+        }
+        return op;
+    }
+
+    public void realizarOperacao(char tipo, double valor) {      
+        Operacao op = selecionarOperacao(tipo, valor);
         this.operacoes.add(op);
-
-        if (tipo == 'd')
-            this.valor += valor;
-        else if(tipo == 's')
-            this.valor -= valor;
+        atualizarSaldo(op, valor);
     }
 
-    public String toString() {
-        // TODO(#4) REFATORAR: Esses dados não estão relacionados a conta
-        String dadosCliente = String.format("CPF: %s\nNome: %s\nTelefone: %s",
-                this.cpfCliente, this.nomeCliente, this.telefoneCliente);
+    private String dadosConta(){
+        return String.format("Conta: %d\nSaldo: %.2f", this.numConta, this.saldo); 
+    }
 
-        // TODO(#4) REFATORAR: Esses dados não estão relacinados a conta
-        String dadosConta = String.format("Ag.: %d\nConta: %d\nGerente: %s\nSaldo: %.2f",
-                this.numAgencia, this.numConta, this.gerente, this.valor);
-
-        // TODO(#5) REFATORAR: Essa operação não deveria estar sendo realizada neste método
+    private String dadosExtrato(){
         String dadosExtrato = "";
         for(Operacao op : this.operacoes) {
             dadosExtrato += op.toString() + "\n";
         }
+        return dadosExtrato;
+    }
 
-        return "-----CLIENTE-----\n" +
-                dadosCliente +
+    public String toString() {
+         return "-----CLIENTE-----\n" +
+               cliente.toString() +
                 "\n\n" +
                 "-----CONTA-----\n" +
-                dadosConta +
+                banco.toString() + "\n" +
+                dadosConta() +
                 "\n\n" +
                 "-----EXTRATO-----\n" +
-                dadosExtrato +
+                dadosExtrato() +
                 "\n";
     }
 }
