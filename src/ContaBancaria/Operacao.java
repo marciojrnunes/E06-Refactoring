@@ -1,3 +1,5 @@
+package ContaBancaria;
+
 public class Operacao {
 
     private char tipo;
