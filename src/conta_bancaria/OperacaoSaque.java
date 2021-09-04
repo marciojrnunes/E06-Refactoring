@@ -1,10 +1,10 @@
-package ContaBancaria;
+package conta_bancaria;
 
 
 public class OperacaoSaque extends Operacao {
 
     public OperacaoSaque(double valor){
-        super('s', valor);
+        super(valor);
     }
     
     @Override

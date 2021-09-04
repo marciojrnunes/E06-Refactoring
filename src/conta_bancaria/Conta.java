@@ -1,8 +1,7 @@
-package ContaBancaria;
+package conta_bancaria;
 
 import java.util.ArrayList;
 import java.util.List;
-import ContaBancaria.*;
 
 public class Conta {
 
@@ -65,7 +64,7 @@ public class Conta {
 
     public String toString() {
 
-        String dadosConta = String.format("Conta: %d\nSaldo: %.2f",
+        String dadosConta = String.format("Conta: %d %nSaldo: %.2f",
                 this.numConta, this.saldoConta);
         
         String dadosExtrato = extratoConta();

@@ -1,12 +1,10 @@
-package ContaBancaria;
+package conta_bancaria;
 
 public abstract class Operacao {
 
-    private char tipo;
     private double valor;
 
-    public Operacao(char tipo, double valor) {
-        this.tipo = tipo;
+    protected Operacao(double valor) {
         this.valor = valor;
     }
 

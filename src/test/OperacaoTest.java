@@ -1,11 +1,11 @@
-package Test;
+package test;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import ContaBancaria.Operacao;
-import ContaBancaria.OperacaoDeposito;
-import ContaBancaria.OperacaoSaque;
+import conta_bancaria.Operacao;
+import conta_bancaria.OperacaoDeposito;
+import conta_bancaria.OperacaoSaque;
 
 import static org.junit.Assert.*;
 

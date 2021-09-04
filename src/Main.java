@@ -1,4 +1,4 @@
-import ContaBancaria.*;
+import conta_bancaria.*;
 
 public class Main {
 

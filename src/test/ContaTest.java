@@ -1,9 +1,9 @@
-package Test;
+package test;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import ContaBancaria.Conta;
+import conta_bancaria.Conta;
 
 import static org.junit.Assert.*;
 

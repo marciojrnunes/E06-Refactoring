@@ -1,4 +1,4 @@
-package ContaBancaria;
+package conta_bancaria;
 
 public class Agencia {
 
