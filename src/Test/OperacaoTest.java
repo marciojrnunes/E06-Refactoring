@@ -4,6 +4,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import ContaBancaria.Operacao;
+import ContaBancaria.OperacaoDeposito;
+import ContaBancaria.OperacaoSaque;
 
 import static org.junit.Assert.*;
 
@@ -14,20 +16,20 @@ public class OperacaoTest {
 
     @Before
     public void init() {
-        this.operacaoDeposito = new Operacao('d', 1000);
-        this.operacaoSaque = new Operacao('s', 1000);
+        this.operacaoDeposito = new OperacaoDeposito(1000);
+        this.operacaoSaque = new OperacaoSaque(1000);
     }
 
     @Test
     public void testGetTipoDep(){
         String tipoDep = this.operacaoDeposito.getTipo();
-        assertEquals('d', tipoDep);
+        assertEquals("Depósito", tipoDep);
 
     }
 
     @Test
     public void testGetTipoSaque(){
         String tipoSaque = this.operacaoSaque.getTipo();
-        assertEquals('s', tipoSaque);
+        assertEquals("Saque", tipoSaque);
     }
 }

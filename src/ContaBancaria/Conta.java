@@ -2,78 +2,79 @@ package ContaBancaria;
 
 import java.util.ArrayList;
 import java.util.List;
+import ContaBancaria.*;
 
 public class Conta {
 
-    // TODO(#1) REFATORAR: Esses dados deveriam ficar em outro lugar
-    private String nomeCliente;
-    private String cpfCliente;
-    private String telefoneCliente;
-
-    // TODO(#1) REFATORAR: Esses dados deveriam ficar em outro lugar
-    private int numAgencia;
     private int numConta;
-    private String gerente;
-
-    // TODO(#2) REFATORAR: Esse nome não é o ideal para representar o saldo da conta
-    private double saldo;
-
+    Cliente donoConta;
+    Agencia agenciaConta;
+    private double saldoConta;
     private List<Operacao> operacoes;
 
-    public Conta(String nomeCliente, String cpfCliente, String telefoneCliente, int numAgencia, int numConta, String gerente, double valor) {
-        this.nomeCliente = nomeCliente;
-        this.cpfCliente = cpfCliente;
-        this.telefoneCliente = telefoneCliente;
-        this.numAgencia = numAgencia;
+    public Conta(Cliente dono, Agencia agencia, int numConta, double saldo) {
+        this.donoConta = dono;
+        this.agenciaConta = agencia;
         this.numConta = numConta;
-        this.gerente = gerente;
-        this.saldo = valor;
-
+        this.saldoConta = saldo;
         this.operacoes = new ArrayList<>();
     }
 
     public Conta() {
-        this(null, null, null, 0, 0, null, 0);
+        this.agenciaConta = null;
+        this.donoConta = null;
+        this.numConta = 0;
+        this.saldoConta = 0.0;
+        this.operacoes = null;
     }
 
     public double getSaldo(){
-        return this.saldo;
+        return this.saldoConta;
     }
 
     public List<Operacao> getOperacoes(){
         return this.operacoes;
     }
 
-    // TODO(#3) REFATORAR: Muita responsabilidade para o mesmo método
-    public void realizarOperacao(char tipo, int valor) {
-        Operacao op = new Operacao(tipo, valor);
+    public void depositar(double valor){
+        OperacaoDeposito op = new OperacaoDeposito(valor);
+        this.saldoConta += valor;
         this.operacoes.add(op);
+    }
 
+    public void sacar(double valor){
+        OperacaoSaque op = new OperacaoSaque(valor);
+        this.saldoConta -= valor;
+        this.operacoes.add(op);
+    }
+
+    public void realizarOperacao(char tipo, int valor) {
         if (tipo == 'd')
-            this.saldo += valor;
+            depositar(valor);
         else if(tipo == 's')
-            this.saldo -= valor;
+            sacar(valor);
+    }
+
+    public String extratoConta(){
+        String extrato = "";
+        for(Operacao op : this.operacoes) {
+            extrato += op.toString() + "\n";
+        }
+        return extrato;
     }
 
     public String toString() {
-        // TODO(#4) REFATORAR: Esses dados não estão relacionados a conta
-        String dadosCliente = String.format("CPF: %s\nNome: %s\nTelefone: %s",
-                this.cpfCliente, this.nomeCliente, this.telefoneCliente);
 
-        // TODO(#4) REFATORAR: Esses dados não estão relacinados a conta
-        String dadosConta = String.format("Ag.: %d\nConta: %d\nGerente: %s\nSaldo: %.2f",
-                this.numAgencia, this.numConta, this.gerente, this.saldo);
-
-        // TODO(#5) REFATORAR: Essa operação não deveria estar sendo realizada neste método
-        String dadosExtrato = "";
-        for(Operacao op : this.operacoes) {
-            dadosExtrato += op.toString() + "\n";
-        }
-
+        String dadosConta = String.format("Conta: %d\nSaldo: %.2f",
+                this.numConta, this.saldoConta);
+        
+        String dadosExtrato = extratoConta();
+        
         return "-----CLIENTE-----\n" +
-                dadosCliente +
+                donoConta +
                 "\n\n" +
                 "-----CONTA-----\n" +
+                this.agenciaConta + 
                 dadosConta +
                 "\n\n" +
                 "-----EXTRATO-----\n" +
