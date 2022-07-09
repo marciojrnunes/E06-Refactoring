@@ -8,19 +8,26 @@ public class Operacao {
         this.valor = valor;
     }
 
-    // TODO(#6) REFATORAR: Muita responsabilidade para mesma classe
     public String getTipo() {
         switch (this.tipo) {
             case 'd':
-                return "Depósito";
+                return getDeposito();
             case 's':
-                return "Saque";
+                return getSaque();
             default:
                 return null;
         }
     }
 
     public String toString() {
-        return this.getTipo() + ":\t" + this.valor;
+        return this.getTipo() + ":   " + this.valor;
+    }
+    
+    public String getDeposito(){
+        return "Depósito";
+    }
+
+    public String getSaque(){
+        return "Saque";
     }
 }
