@@ -8,16 +8,9 @@ public class Operacao {
         this.valor = valor;
     }
 
-    // TODO(#6) REFATORAR: Muita responsabilidade para mesma classe
     public String getTipo() {
-        switch (this.tipo) {
-            case 'd':
-                return "Depósito";
-            case 's':
-                return "Saque";
-            default:
-                return null;
-        }
+        AccountType accountType = AccountType.fromCode("S");
+        return accountType.toString();
     }
 
     public String toString() {
