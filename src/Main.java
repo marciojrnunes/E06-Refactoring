@@ -3,13 +3,13 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Conta minhaConta = new Conta("João", "111.111.111-11", "31 1111-1111",
-                            111, 222222, "Gil", 0.00);
+        Conta minhaConta = new Conta(new Cliente("Robert", "111.111.111-11", "31-99999-9999"),
+                                     new Agencia(111, 12345, "Thomas"), 0.0);
 
-        minhaConta.realizarOperacao('d', 450);
-        minhaConta.realizarOperacao('s', 50);
-        minhaConta.realizarOperacao('s', 50);
-        minhaConta.realizarOperacao('s', 50);
+        minhaConta.realizarOperacao(new OpecaraoDeposito(450));
+        minhaConta.realizarOperacao(new OperacaoSaque(50));
+        minhaConta.realizarOperacao(new OperacaoSaque(50));
+        minhaConta.realizarOperacao(new OperacaoSaque(50));
 
         System.out.println(minhaConta);
     }
