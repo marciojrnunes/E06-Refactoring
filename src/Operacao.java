@@ -1,5 +1,8 @@
 public class Operacao {
 
+    public static final char DEPOSITO = 'd';
+    public static final char SAQUE = 's';
+
     private char tipo;
     private double valor;
 
@@ -8,19 +11,29 @@ public class Operacao {
         this.valor = valor;
     }
 
-    // TODO(#6) REFATORAR: Muita responsabilidade para mesma classe
-    public String getTipo() {
-        switch (this.tipo) {
-            case 'd':
-                return "Depósito";
-            case 's':
-                return "Saque";
-            default:
-                return null;
+    public char getTipo() {
+        return tipo;
+    }
+
+    public double getValor() {
+        return valor;
+    }
+
+    private String getTipoDescricao(char tipo) {
+        if (tipo == DEPOSITO) {
+            return "Depósito";
+        } else if (tipo == SAQUE) {
+            return "Saque";
+        } else {
+            return "Tipo inválido";
         }
     }
 
+    public String getTipoDescricao() {
+        return getTipoDescricao(tipo);
+    }
+
     public String toString() {
-        return this.getTipo() + ":\t" + this.valor;
+        return getTipoDescricao() + ":\t" + valor;
     }
 }
