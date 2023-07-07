@@ -3,8 +3,7 @@ public class Operacao {
     private char tipo;
     private double valor;
 
-    public Operacao(char tipo, double valor) {
-        this.tipo = tipo;
+    public Operacao(double valor) {
         this.valor = valor;
     }
 
@@ -18,6 +17,14 @@ public class Operacao {
             default:
                 return null;
         }
+    }
+
+    public double getValor() {
+        return valor;
+    }
+
+    public void setValor(double valor) {
+        this.valor = valor;
     }
 
     public String toString() {
