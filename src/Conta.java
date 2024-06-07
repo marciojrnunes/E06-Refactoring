@@ -1,73 +1,107 @@
-import java.util.ArrayList;
-import java.util.List;
+class Cliente {
+    private String nome;
+    private String cpf;
+    private String telefone;
 
-public class Conta {
+    public Cliente(String nome, String cpf, String telefone) {
+        this.nome = nome;
+        this.cpf = cpf;
+        this.telefone = telefone;
+    }
 
-    // TODO(#1) REFATORAR: Esses dados deveriam ficar em outro lugar
-    private String nomeCliente;
-    private String cpfCliente;
-    private String telefoneCliente;
+    @Override
+    public String toString() {
+        return String.format("CPF: %s\nNome: %s\nTelefone: %s", cpf, nome, telefone);
+    }
+}
 
-    // TODO(#1) REFATORAR: Esses dados deveriam ficar em outro lugar
+class Agencia {
     private int numAgencia;
     private int numConta;
     private String gerente;
 
-    // TODO(#2) REFATORAR: Esse nome não é o ideal para representar o saldo da conta
-    private double valor;
-
-    private List<Operacao> operacoes;
-
-    public Conta(String nomeCliente, String cpfCliente, String telefoneCliente, int numAgencia, int numConta, String gerente, double valor) {
-        this.nomeCliente = nomeCliente;
-        this.cpfCliente = cpfCliente;
-        this.telefoneCliente = telefoneCliente;
+    public Agencia(int numAgencia, int numConta, String gerente) {
         this.numAgencia = numAgencia;
         this.numConta = numConta;
         this.gerente = gerente;
-        this.valor = valor;
+    }
 
+    @Override
+    public String toString() {
+        return String.format("Ag.: %d\nConta: %d\nGerente: %s", numAgencia, numConta, gerente);
+    }
+}
+
+class Operacao {
+    private char tipo;
+    private double valor;
+
+    public Operacao(char tipo, double valor) {
+        this.tipo = tipo;
+        this.valor = valor;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Tipo: %c, Valor: %.2f", tipo, valor);
+    }
+}
+
+public class Conta {
+    private Cliente cliente;
+    private Agencia agencia;
+    private double saldo;
+    private List<Operacao> operacoes;
+
+    public Conta(Cliente cliente, Agencia agencia, double saldo) {
+        this.cliente = cliente;
+        this.agencia = agencia;
+        this.saldo = saldo;
         this.operacoes = new ArrayList<>();
     }
 
     public Conta() {
-        this(null, null, null, 0, 0, null, 0);
+        this(null, null, 0);
     }
 
-    // TODO(#3) REFATORAR: Muita responsabilidade para o mesmo método
-    public void realizarOperacao(char tipo, int valor) {
+    public void depositar(double valor) {
+        realizarOperacao('d', valor);
+    }
+
+    public void sacar(double valor) {
+        realizarOperacao('s', valor);
+    }
+
+    private void realizarOperacao(char tipo, double valor) {
         Operacao op = new Operacao(tipo, valor);
-        this.operacoes.add(op);
+        operacoes.add(op);
 
-        if (tipo == 'd')
-            this.valor += valor;
-        else if(tipo == 's')
-            this.valor -= valor;
+        if (tipo == 'd') {
+            saldo += valor;
+        } else if (tipo == 's') {
+            saldo -= valor;
+        }
     }
 
-    public String toString() {
-        // TODO(#4) REFATORAR: Esses dados não estão relacionados a conta
-        String dadosCliente = String.format("CPF: %s\nNome: %s\nTelefone: %s",
-                this.cpfCliente, this.nomeCliente, this.telefoneCliente);
-
-        // TODO(#4) REFATORAR: Esses dados não estão relacinados a conta
-        String dadosConta = String.format("Ag.: %d\nConta: %d\nGerente: %s\nSaldo: %.2f",
-                this.numAgencia, this.numConta, this.gerente, this.valor);
-
-        // TODO(#5) REFATORAR: Essa operação não deveria estar sendo realizada neste método
-        String dadosExtrato = "";
-        for(Operacao op : this.operacoes) {
-            dadosExtrato += op.toString() + "\n";
+    private String gerarExtrato() {
+        StringBuilder dadosExtrato = new StringBuilder();
+        for (Operacao op : operacoes) {
+            dadosExtrato.append(op.toString()).append("\n");
         }
+        return dadosExtrato.toString();
+    }
 
+    @Override
+    public String toString() {
         return "-----CLIENTE-----\n" +
-                dadosCliente +
+                cliente +
                 "\n\n" +
                 "-----CONTA-----\n" +
-                dadosConta +
+                agencia +
+                "\nSaldo: " + String.format("%.2f", saldo) +
                 "\n\n" +
                 "-----EXTRATO-----\n" +
-                dadosExtrato +
+                gerarExtrato() +
                 "\n";
     }
 }
