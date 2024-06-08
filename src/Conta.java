@@ -3,71 +3,52 @@ import java.util.List;
 
 public class Conta {
 
-    // TODO(#1) REFATORAR: Esses dados deveriam ficar em outro lugar
-    private String nomeCliente;
-    private String cpfCliente;
-    private String telefoneCliente;
-
-    // TODO(#1) REFATORAR: Esses dados deveriam ficar em outro lugar
-    private int numAgencia;
-    private int numConta;
-    private String gerente;
-
-    // TODO(#2) REFATORAR: Esse nome não é o ideal para representar o saldo da conta
-    private double valor;
-
+    private final Cliente cliente;
+    private DadosConta dadosConta;
     private List<Operacao> operacoes;
 
-    public Conta(String nomeCliente, String cpfCliente, String telefoneCliente, int numAgencia, int numConta, String gerente, double valor) {
-        this.nomeCliente = nomeCliente;
-        this.cpfCliente = cpfCliente;
-        this.telefoneCliente = telefoneCliente;
-        this.numAgencia = numAgencia;
-        this.numConta = numConta;
-        this.gerente = gerente;
-        this.valor = valor;
-
+    public Conta(Cliente cliente, DadosConta dadosConta) {
+        this.cliente = cliente;
+        this.dadosConta = dadosConta;
         this.operacoes = new ArrayList<>();
     }
 
-    public Conta() {
-        this(null, null, null, 0, 0, null, 0);
+
+    public void depositar(int valor) {
+        dadosConta.depositar(valor);
+        operacoes.add(new Operacao('d', valor));
     }
 
-    // TODO(#3) REFATORAR: Muita responsabilidade para o mesmo método
-    public void realizarOperacao(char tipo, int valor) {
-        Operacao op = new Operacao(tipo, valor);
-        this.operacoes.add(op);
-
-        if (tipo == 'd')
-            this.valor += valor;
-        else if(tipo == 's')
-            this.valor -= valor;
+    public void sacar(int valor) {
+        dadosConta.sacar(valor);
+        operacoes.add(new Operacao('s', valor));
     }
 
-    public String toString() {
-        // TODO(#4) REFATORAR: Esses dados não estão relacionados a conta
-        String dadosCliente = String.format("CPF: %s\nNome: %s\nTelefone: %s",
-                this.cpfCliente, this.nomeCliente, this.telefoneCliente);
 
-        // TODO(#4) REFATORAR: Esses dados não estão relacinados a conta
-        String dadosConta = String.format("Ag.: %d\nConta: %d\nGerente: %s\nSaldo: %.2f",
-                this.numAgencia, this.numConta, this.gerente, this.valor);
 
-        // TODO(#5) REFATORAR: Essa operação não deveria estar sendo realizada neste método
-        String dadosExtrato = "";
-        for(Operacao op : this.operacoes) {
-            dadosExtrato += op.toString() + "\n";
+    public String gerarExtrato(){
+        StringBuilder extrato = new StringBuilder();
+        for (Operacao op : operacoes) {
+            extrato.append(op).append("\n");
         }
+        return extrato.toString();
+    }
+
+
+    @Override
+    public String toString() {
+
 
         return "-----CLIENTE-----\n" +
-                dadosCliente +
+                cliente +
                 "\n\n" +
                 "-----CONTA-----\n" +
                 dadosConta +
+
                 "\n\n" +
                 "-----EXTRATO-----\n" +
-                dadosExtrato +
+                gerarExtrato() +
                 "\n";
+
     }
 }
