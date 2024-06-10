@@ -4,29 +4,22 @@ import java.util.List;
 public class Conta {
 
     // TODO(#1) REFATORAR: Esses dados deveriam ficar em outro lugar
-    private String nomeCliente;
-    private String cpfCliente;
-    private String telefoneCliente;
+    private Cliente cliente;
 
     // TODO(#1) REFATORAR: Esses dados deveriam ficar em outro lugar
-    private int numAgencia;
+    private Agencia agencia;
     private int numConta;
-    private String gerente;
 
     // TODO(#2) REFATORAR: Esse nome não é o ideal para representar o saldo da conta
-    private double valor;
+    private double saldo;
 
     private List<Operacao> operacoes;
 
-    public Conta(String nomeCliente, String cpfCliente, String telefoneCliente, int numAgencia, int numConta, String gerente, double valor) {
-        this.nomeCliente = nomeCliente;
-        this.cpfCliente = cpfCliente;
-        this.telefoneCliente = telefoneCliente;
-        this.numAgencia = numAgencia;
+    public Conta(Cliente cliente, Agencia agencia,  int numConta, double saldoInicial) {
+        this.cliente = cliente;
+        this.agencia = agencia;
+        this.saldo = saldoInicial;
         this.numConta = numConta;
-        this.gerente = gerente;
-        this.valor = valor;
-
         this.operacoes = new ArrayList<>();
     }
 
@@ -35,36 +28,39 @@ public class Conta {
     }
 
     // TODO(#3) REFATORAR: Muita responsabilidade para o mesmo método
-    public void realizarOperacao(char tipo, int valor) {
+    public void realizarOperacao(char tipo, double valor) {
+        if (tipo == 'd') {
+            Operacao.depositar(this, valor);
+        } else if (tipo == 's') {
+            Operacao.sacar(this, valor);
+        } else {
+            System.out.println("Operação inválida");
+            return;
+        }
         Operacao op = new Operacao(tipo, valor);
-        this.operacoes.add(op);
-
-        if (tipo == 'd')
-            this.valor += valor;
-        else if(tipo == 's')
-            this.valor -= valor;
+        operacoes.add(op);
+    }
+    public String dadosConta() {
+        return String.format("Conta: %d\nSaldo: %.2f",
+                 numConta, saldo);
     }
 
     public String toString() {
         // TODO(#4) REFATORAR: Esses dados não estão relacionados a conta
-        String dadosCliente = String.format("CPF: %s\nNome: %s\nTelefone: %s",
-                this.cpfCliente, this.nomeCliente, this.telefoneCliente);
+        String dadosCliente = cliente.toString();
 
         // TODO(#4) REFATORAR: Esses dados não estão relacinados a conta
-        String dadosConta = String.format("Ag.: %d\nConta: %d\nGerente: %s\nSaldo: %.2f",
-                this.numAgencia, this.numConta, this.gerente, this.valor);
+        String dadosConta = this.dadosConta();
+        String dadosAgencia = agencia.dadosAgencia();
 
         // TODO(#5) REFATORAR: Essa operação não deveria estar sendo realizada neste método
-        String dadosExtrato = "";
-        for(Operacao op : this.operacoes) {
-            dadosExtrato += op.toString() + "\n";
-        }
+        String dadosExtrato = Operacao.gerarExtrato(this.operacoes);
 
         return "-----CLIENTE-----\n" +
                 dadosCliente +
                 "\n\n" +
                 "-----CONTA-----\n" +
-                dadosConta +
+                dadosConta + dadosAgencia +
                 "\n\n" +
                 "-----EXTRATO-----\n" +
                 dadosExtrato +
