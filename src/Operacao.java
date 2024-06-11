@@ -8,18 +8,25 @@ public class Operacao {
         this.valor = valor;
     }
 
-    // TODO(#6) REFATORAR: Muita responsabilidade para mesma classe
-    public String getTipo() {
-        switch (this.tipo) {
-            case 'd':
-                return "Depósito";
-            case 's':
-                return "Saque";
-            default:
-                return null;
-        }
+    //criar operação de deposito
+    public void depositar(Conta conta, double valor){
+        conta.setSaldo(conta.getSaldo() + this.valor);
     }
 
+    //criar operação de saque
+    public void sacar(Conta conta, double valor){
+        conta.setSaldo(conta.getSaldo() - this.valor);
+    }
+
+    public char getTipo() {
+        return tipo;
+    }
+
+    public double getValor(){
+        return valor;
+    }    
+
+    @Override
     public String toString() {
         return this.getTipo() + ":\t" + this.valor;
     }
