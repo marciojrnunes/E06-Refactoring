@@ -1,6 +1,6 @@
 # Exercício: Refactoring
 
-Professor: João Eduardo Montandon
+Professor: Márcio Júnior Nunes
 
 ## Refatorações
 
