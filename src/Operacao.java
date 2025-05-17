@@ -1,5 +1,4 @@
 public class Operacao {
-
     private char tipo;
     private double valor;
 
@@ -8,7 +7,6 @@ public class Operacao {
         this.valor = valor;
     }
 
-    // TODO(#6) REFATORAR: Muita responsabilidade para mesma classe
     public String getTipo() {
         switch (this.tipo) {
             case 'd':
@@ -21,6 +19,6 @@ public class Operacao {
     }
 
     public String toString() {
-        return this.getTipo() + ":\t" + this.valor;
-    }
+    return String.format("%-9s: %.2f", this.getTipo(), this.valor); 
+}
 }
