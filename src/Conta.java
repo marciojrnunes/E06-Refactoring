@@ -2,72 +2,54 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Conta {
-
-    // TODO(#1) REFATORAR: Esses dados deveriam ficar em outro lugar
-    private String nomeCliente;
-    private String cpfCliente;
-    private String telefoneCliente;
-
-    // TODO(#1) REFATORAR: Esses dados deveriam ficar em outro lugar
     private int numAgencia;
     private int numConta;
     private String gerente;
-
-    // TODO(#2) REFATORAR: Esse nome não é o ideal para representar o saldo da conta
-    private double valor;
-
+    private double saldoConta;
+    private Cliente cliente;
     private List<Operacao> operacoes;
 
-    public Conta(String nomeCliente, String cpfCliente, String telefoneCliente, int numAgencia, int numConta, String gerente, double valor) {
-        this.nomeCliente = nomeCliente;
-        this.cpfCliente = cpfCliente;
-        this.telefoneCliente = telefoneCliente;
+    public Conta(int numAgencia, int numConta, String gerente, double saldoConta, Cliente cliente) {
         this.numAgencia = numAgencia;
         this.numConta = numConta;
         this.gerente = gerente;
-        this.valor = valor;
-
+        this.saldoConta = saldoConta;
+        this.cliente = cliente;
         this.operacoes = new ArrayList<>();
     }
 
-    public Conta() {
-        this(null, null, null, 0, 0, null, 0);
-    }
+    public void realizarOperacao(char tipo, double valorOperacao) {
+        if (valorOperacao <= 0) {
+            throw new IllegalArgumentException("Valor da operação deve ser positivo");
+        }
 
-    // TODO(#3) REFATORAR: Muita responsabilidade para o mesmo método
-    public void realizarOperacao(char tipo, int valor) {
-        Operacao op = new Operacao(tipo, valor);
+        if (tipo == 's' && valorOperacao > this.saldoConta) {
+            throw new IllegalArgumentException("Saldo insuficiente");
+        }
+
+        Operacao op = new Operacao(tipo, valorOperacao);
         this.operacoes.add(op);
 
-        if (tipo == 'd')
-            this.valor += valor;
-        else if(tipo == 's')
-            this.valor -= valor;
+        if (tipo == 'd') {
+            this.saldoConta += valorOperacao;
+        } else if (tipo == 's') {
+            this.saldoConta -= valorOperacao;
+        } else {
+            throw new IllegalArgumentException("Tipo de operação inválido");
+        }
     }
 
     public String toString() {
-        // TODO(#4) REFATORAR: Esses dados não estão relacionados a conta
-        String dadosCliente = String.format("CPF: %s\nNome: %s\nTelefone: %s",
-                this.cpfCliente, this.nomeCliente, this.telefoneCliente);
-
-        // TODO(#4) REFATORAR: Esses dados não estão relacinados a conta
-        String dadosConta = String.format("Ag.: %d\nConta: %d\nGerente: %s\nSaldo: %.2f",
-                this.numAgencia, this.numConta, this.gerente, this.valor);
-
-        // TODO(#5) REFATORAR: Essa operação não deveria estar sendo realizada neste método
-        String dadosExtrato = "";
-        for(Operacao op : this.operacoes) {
-            dadosExtrato += op.toString() + "\n";
-        }
-
-        return "-----CLIENTE-----\n" +
-                dadosCliente +
-                "\n\n" +
-                "-----CONTA-----\n" +
-                dadosConta +
-                "\n\n" +
-                "-----EXTRATO-----\n" +
-                dadosExtrato +
-                "\n";
+        return cliente.toString() + 
+               String.format("-----CONTA-----\nAg.: %d\nConta: %d\nGerente: %s\nSaldo: %.2f\n\n",
+               this.numAgencia, this.numConta, this.gerente, this.saldoConta);
     }
+
+public String gerarExtrato() {
+    StringBuilder extrato = new StringBuilder("-----EXTRATO-----");
+    for (Operacao op : this.operacoes) {
+        extrato.append("\n").append(op.toString()); 
+    }
+    return extrato.toString();
+}
 }
