@@ -3,71 +3,124 @@ import java.util.List;
 
 public class Conta {
 
-    // TODO(#1) REFATORAR: Esses dados deveriam ficar em outro lugar
-    private String nomeCliente;
-    private String cpfCliente;
-    private String telefoneCliente;
 
-    // TODO(#1) REFATORAR: Esses dados deveriam ficar em outro lugar
+    private Cliente cliente;
+
+    
     private int numAgencia;
     private int numConta;
     private String gerente;
 
-    // TODO(#2) REFATORAR: Esse nome não é o ideal para representar o saldo da conta
-    private double valor;
+    
+    private double saldo;
 
-    private List<Operacao> operacoes;
+    
+    private Extrato extrato;
 
-    public Conta(String nomeCliente, String cpfCliente, String telefoneCliente, int numAgencia, int numConta, String gerente, double valor) {
-        this.nomeCliente = nomeCliente;
-        this.cpfCliente = cpfCliente;
-        this.telefoneCliente = telefoneCliente;
+    
+    public Conta(String nomeCliente, String cpfCliente, String telefoneCliente,
+                 int numAgencia, int numConta, String gerente, double saldoInicial) {
+
+        this.cliente = new Cliente(nomeCliente, cpfCliente, telefoneCliente);
         this.numAgencia = numAgencia;
         this.numConta = numConta;
         this.gerente = gerente;
-        this.valor = valor;
-
-        this.operacoes = new ArrayList<>();
+        this.saldo = saldoInicial;
+        this.extrato = new Extrato();
     }
 
     public Conta() {
         this(null, null, null, 0, 0, null, 0);
     }
 
-    // TODO(#3) REFATORAR: Muita responsabilidade para o mesmo método
-    public void realizarOperacao(char tipo, int valor) {
+    public void realizarOperacao(char tipo, double valor) {
         Operacao op = new Operacao(tipo, valor);
-        this.operacoes.add(op);
+        extrato.adicionarOperacao(op);
 
-        if (tipo == 'd')
-            this.valor += valor;
-        else if(tipo == 's')
-            this.valor -= valor;
+        if (tipo == 'd') {
+            saldo += valor;
+        } else if (tipo == 's') {
+            saldo -= valor;
+        }
     }
 
+    @Override
     public String toString() {
-        // TODO(#4) REFATORAR: Esses dados não estão relacionados a conta
-        String dadosCliente = String.format("CPF: %s\nNome: %s\nTelefone: %s",
-                this.cpfCliente, this.nomeCliente, this.telefoneCliente);
-
-        // TODO(#4) REFATORAR: Esses dados não estão relacinados a conta
+        String dadosCliente = cliente.toString();
         String dadosConta = String.format("Ag.: %d\nConta: %d\nGerente: %s\nSaldo: %.2f",
-                this.numAgencia, this.numConta, this.gerente, this.valor);
-
-        // TODO(#5) REFATORAR: Essa operação não deveria estar sendo realizada neste método
-        String dadosExtrato = "";
-        for(Operacao op : this.operacoes) {
-            dadosExtrato += op.toString() + "\n";
-        }
+                                         numAgencia, numConta, gerente, saldo);
+        String dadosExtrato = extrato.toString();
 
         return "-----CLIENTE-----\n" +
-                dadosCliente +
-                "\n\n" +
-                "-----CONTA-----\n" +
-                dadosConta +
-                "\n\n" +
-                "-----EXTRATO-----\n" +
-                dadosExtrato +
-                "\n";
+               dadosCliente +
+               "\n\n-----CONTA-----\n" +
+               dadosConta +
+               "\n\n-----EXTRATO-----\n" +
+               dadosExtrato +
+               "\n";
+    }
+
+    
+    private class Cliente {
+        private String nome;
+        private String cpf;
+        private String telefone;
+
+        public Cliente(String nome, String cpf, String telefone) {
+            this.nome = nome;
+            this.cpf = cpf;
+            this.telefone = telefone;
+        }
+
+        @Override
+        public String toString() {
+            return String.format("CPF: %s\nNome: %s\nTelefone: %s", cpf, nome, telefone);
+        }
+    }
+
+    
+    private class Extrato {
+        private List<Operacao> operacoes;
+
+        public Extrato() {
+            operacoes = new ArrayList<>();
+        }
+
+        public void adicionarOperacao(Operacao op) {
+            operacoes.add(op);
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder();
+            for (Operacao op : operacoes) {
+                sb.append(op.toString()).append("\n");
+            }
+            return sb.toString();
+        }
+    }
+
+    
+    private class Operacao {
+        private char tipo;
+        private double valor;
+
+        public Operacao(char tipo, double valor) {
+            this.tipo = tipo;
+            this.valor = valor;
+        }
+
+        public String getTipoExtenso() {
+            switch (tipo) {
+                case 'd': return "Depósito";
+                case 's': return "Saque";
+                default: return "Operação Desconhecida";
+            }
+        }
+
+        @Override
+        public String toString() {
+            return getTipoExtenso() + ":\t" + valor;
+        }
     }
 }
