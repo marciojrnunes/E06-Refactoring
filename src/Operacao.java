@@ -8,8 +8,11 @@ public class Operacao {
         this.valor = valor;
     }
 
-    // TODO(#6) REFATORAR: Muita responsabilidade para mesma classe
-    public String getTipo() {
+    public char getTipo() {
+        return tipo;
+    }
+
+    public String tipoDaOperacao(){
         switch (this.tipo) {
             case 'd':
                 return "Depósito";
